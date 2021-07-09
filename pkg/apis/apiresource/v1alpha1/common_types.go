@@ -18,6 +18,7 @@ package v1alpha1
 
 import (
 	"encoding/json"
+	"fmt"
 
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -25,6 +26,7 @@ import (
 )
 
 const APIVersionAnnotation = "apiresource.kcp.dev/apiVersion"
+
 type ColumnDefinition struct {
 	metav1.TableColumnDefinition `json:",inline"`
 
@@ -46,12 +48,27 @@ func (cd *ColumnDefinitions) ImportFromCRDVersion(crdVersion *apiextensionsv1.Cu
 	for _, apc := range crdVersion.AdditionalPrinterColumns {
 		if !alreadyExists(apc.Name) {
 			jsonPath := apc.JSONPath
+
+			desc := apc.Description
+			if len(desc) == 0 {
+				desc = apc.Name
+			}
+
+			format := apc.Format
+			if len(format) == 0 {
+				format = "date"
+			}
+
+			fmt.Printf("izhang >>>>>>>>>>>>> name: %s, desc: %s, format: %s\n", apc.Name, apc.Description, apc.Format)
+
+			fmt.Printf("izhang >>>>>>>>>after name: %s, desc: %s, format: %s\n", apc.Name, desc, format)
+
 			*cd = append(*cd, ColumnDefinition{
 				TableColumnDefinition: metav1.TableColumnDefinition{
 					Name:        apc.Name,
 					Type:        apc.Type,
-					Format:      apc.Format,
-					Description: apc.Description,
+					Format:      format,
+					Description: desc,
 					Priority:    apc.Priority,
 				},
 				JSONPath: &jsonPath,
