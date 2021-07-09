@@ -117,6 +117,7 @@ func (sr *SubResources) ImportFromCRDVersion(crdVersion *apiextensionsv1.CustomR
 }
 
 type GroupVersion struct {
+	// +optional
 	Group   string `json:"group"`
 	Version string `json:"version"`
 }

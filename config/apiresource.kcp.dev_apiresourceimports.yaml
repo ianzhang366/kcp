@@ -99,7 +99,6 @@ spec:
                   version:
                     type: string
                 required:
-                - group
                 - version
                 type: object
               kind:
